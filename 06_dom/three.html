@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Ensures compatibility with older browsers -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Makes layout responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chai aur Code | DOM</title>
+</head>
+
+<body style="background-color: #212121; color: #fff;">
+    <!-- Initial HTML structure -->
+    <ul class="language">
+        <li>Javascript</li>
+    </ul>
+</body>
+
+<script>
+    /**********************************************
+     🧩 FUNCTION 1: addLanguage()
+     → Adds a new <li> element using innerHTML
+     **********************************************/
+    function addLanguage(langName) {
+        // Create a new <li> element
+        const li = document.createElement('li');
+
+        // Add text inside using innerHTML (can also insert HTML tags)
+        li.innerHTML = `${langName}`;
+
+        // Select the <ul> element using class selector and append <li> to it
+        document.querySelector('.language').appendChild(li);
+    }
+
+    // Calling the function — adds new <li> items dynamically
+    addLanguage("python");
+    addLanguage("typescript");
+
+
+    /**********************************************
+     🧩 FUNCTION 2: addOptiLanguage()
+     → More optimized version (faster & safer)
+     **********************************************/
+    function addOptiLanguage(langName) {
+        // Create a new <li> element
+        const li = document.createElement('li');
+
+        // Instead of using innerHTML, use createTextNode()
+        // Safer & slightly faster (avoids re-parsing HTML)
+        li.appendChild(document.createTextNode(langName));
+
+        // Append new <li> inside the <ul>
+        document.querySelector('.language').appendChild(li);
+    }
+
+    // Adds "golang" to the list
+    addOptiLanguage('golang');
+
+
+    /**********************************************
+     ✏️ EDIT / REPLACE ELEMENT (replaceWith)
+     **********************************************/
+    // Select the 2nd <li> element using CSS pseudo-class :nth-child(2)
+    const secondLang = document.querySelector("li:nth-child(2)");
+    console.log(secondLang); // Logs the second <li> before change
+
+    // --- OPTION 1 ---
+    // secondLang.innerHTML = "Mojo" 
+    // (Directly replaces inner content)
+
+    // --- OPTION 2 (Recommended) ---
+    // Create a brand-new <li> element
+    const newli = document.createElement('li');
+    newli.textContent = "Mojo"; // Set its text content
+    // Replace the old element with the new one
+    secondLang.replaceWith(newli);
+    // Now, 2nd <li> = "Mojo"
+
+
+    /**********************************************
+     ✏️ EDIT USING outerHTML
+     **********************************************/
+    // Select the first <li> element
+    const firstLang = document.querySelector("li:first-child");
+
+    // outerHTML replaces the entire element (not just content)
+    firstLang.outerHTML = '<li>TypeScript</li>';
+    // Old first <li> (Javascript) → replaced completely with new one
+
+
+    /**********************************************
+     ❌ REMOVE ELEMENT
+     **********************************************/
+    // Select the last <li> element
+    const lastLang = document.querySelector('li:last-child');
+
+    // Remove it from the DOM
+    lastLang.remove();
+    // Removes the last language in the list
+
+
+    /**********************************************
+     ✅ FINAL OUTPUT STRUCTURE IN HTML
+     **********************************************
+     <ul class="language">
+         <li>TypeScript</li>   ← (Replaced first)
+         <li>Mojo</li>         ← (Replaced second)
+         <li>typescript</li>   ← (Added)
+     </ul>
+     **********************************************/
+</script>
+</html>

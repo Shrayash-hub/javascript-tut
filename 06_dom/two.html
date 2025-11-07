@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Ensures compatibility with older versions of Internet Explorer -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- Makes the website responsive on all devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Chai aur Code</title>
+</head>
+<body style="background-color: #212121; color: #fff;">
+    <!-- The body background is dark (using inline CSS) -->
+</body>
+
+<script>
+    /********************************************
+     🧩 STEP 1: Create a new HTML element
+     ********************************************/
+    // document.createElement('div') → creates a new <div> element in memory (NOT visible yet)
+    const div = document.createElement('div')
+
+    // Just logging it to console to see what we created
+    console.log(div)  
+    // Output: <div></div> (an empty div element)
+
+
+    /********************************************
+     🏷️ STEP 2: Add class name and id to the div
+     ********************************************/
+    // Add a CSS class to the div
+    div.className = "main"
+    // Now div = <div class="main"></div>
+
+    // Add a random ID using Math.random()
+    // Math.random() generates a decimal between 0 and 1
+    // Multiplying by 10 + 1 → gives range (1 to 11)
+    // Math.round() → converts to nearest integer
+    div.id = Math.round(Math.random() * 10 + 1)
+    // Example output: <div class="main" id="7"></div>
+
+
+    /********************************************
+     ⚙️ STEP 3: Set custom attributes
+     ********************************************/
+    // setAttribute("name", "value") → adds or modifies an attribute
+    div.setAttribute("title", "generated title")
+    // Now div = <div class="main" id="7" title="generated title"></div>
+
+
+    /********************************************
+     🎨 STEP 4: Add some CSS styles using JS
+     ********************************************/
+    div.style.backgroundColor = "green"  // Adds background color
+    div.style.padding = "12px"           // Adds padding inside div
+    // You can also add more styles like fontSize, color, border, etc.
+
+
+    /********************************************
+     📝 STEP 5: Add text inside the div
+     ********************************************/
+    // Option 1 (simple): directly write text using innerText
+    // div.innerText = "Chai aur code"
+
+    // Option 2 (recommended when manipulating nodes):
+    // createTextNode() → creates a text node (content)
+    const addText = document.createTextNode("Chai aur code")
+
+    // appendChild() → attaches the created text node inside <div>
+    div.appendChild(addText)
+    // Now div looks like:
+    // <div class="main" id="7" title="generated title" style="background-color:green;padding:12px;">Chai aur code</div>
+
+
+    /********************************************
+     🧱 STEP 6: Add the div to the actual webpage
+     ********************************************/
+    // document.body.appendChild(div)
+    // → Adds the newly

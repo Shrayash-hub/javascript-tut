@@ -1,20 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    
-    <title>DOM learning</title>
-    <style>
-        .bg-black{
-            background-color: #212121;
-            color: white
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOM Manipulation Notes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f7ff;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    .menu-item {
+      color: teal;
+    }
+    .highlight {
+      background-color: yellow;
+    }
+    button {
+      margin: 5px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    img {
+      width: 120px;
+      margin: 5px;
+    }
+  </style>
 </head>
-<body class="bg-black">
-    <div>
-        <h1 id="title" class="heading">DOM learning on chai aur code</h1>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-    </div>
+<body>
+  
+  <h1 id="main-heading">DOM Manipulation in JavaScript</h1>
+  <p id="description">
+    <strong>This paragraph</strong> demonstrates <em>innerHTML</em>, <em>textContent</em>, and <em>innerText</em>.
+    <span style="display:none;">(Hidden text)</span>
+  </p>
+
+  <h2>Menu Items</h2>
+  <ul>
+    <li class="menu-item">Home</li>
+    <li class="menu-item">About</li>
+    <li class="menu-item">Contact</li>
+  </ul>
+
+  <h2>Images</h2>
+  <img id="logo" src="https://via.placeholder.com/120x80?text=Logo" alt="Logo">
+  <img src="https://via.placeholder.com/120x80?text=Image1" alt="Image1">
+  <img src="https://via.placeholder.com/120x80?text=Image2" alt="Image2">
+
+  <h2>Buttons (querySelector examples)</h2>
+  <button class="btn">Click Me</button>
+  <button class="btn">Press Me</button>
+  <button class="btn">Try Me</button>
+
+  <h2>Form Input Example</h2>
+  <input type="text" name="username" placeholder="Enter your name">
+
+  <script>
+    /*******************************************
+     🌐 1️⃣ getElementById()
+     *******************************************/
+    const heading = document.getElementById("main-heading");
+    console.log(heading); // Shows <h1> element in console
+
+    // Change content and style
+    heading.textContent = "1️⃣ Selected using getElementById()";
+    heading.style.color = "blue";
+
+
+    /*******************************************
+     2️⃣ getAttribute() and setAttribute()
+     *******************************************/
+    const logo = document.getElementById("logo");
+
+    // Get attribute
+    console.log(logo.getAttribute("src"));  // Logs image src link
+
+    // Set attribute
+    logo.setAttribute("alt", "Main Company Logo");
+    logo.setAttribute("title", "Hover text added using JS");
+
+
+    /*******************************************
+     3️⃣ Style attribute after saving it in a variable
+     *******************************************/
+    let headingStyle = heading.style;
+    headingStyle.backgroundColor = "lightyellow";
+    headingStyle.padding = "10px";
+    headingStyle.borderRadius = "8px";
+
+
+    /*******************************************
+     4️⃣ innerHTML vs textContent vs innerText
+     *******************************************/
+    const para = document.getElementById("description");
+
+    console.log("innerHTML:", para.innerHTML);   // Includes tags
+    console.log("textContent:", para.textContent); // Includes hidden text
+    console.log("innerText:", para.innerText);     // Only visible text
+
+    // Example of changing content
+    para.innerHTML += " <b>Added using innerHTML!</b>";
+
+
+    /*******************************************
+     5️⃣ querySelector()
+     *******************************************/
+    // Select by tag
+    const firstButton = document.querySelector("button");
+    firstButton.textContent = "Selected via querySelector()";
+
+    // Select by class
+    const menuItem = document.querySelector(".menu-item");
+    menuItem.classList.add("highlight");
+
+    // Select input by attribute
+    const inputBox = document.querySelector("input[name='username']");
+    inputBox.value = "Selected using querySelector";
+
+
+    /*******************************************
+     6️⃣ querySelectorAll() & NodeList
+     *******************************************/
+    const allButtons = document.querySelectorAll(".btn");
+    console.log(allButtons); // NodeList of buttons
+
+    // Access by index
+    allButtons[0].style.backgroundColor = "lightgreen";
+
+    // Loop with forEach
+    allButtons.forEach((btn, i) => {
+      btn.textContent = `Button ${i + 1}`;
+    });
+
+
+    /*******************************************
+     7️⃣ Difference between Map() and Array
+     *******************************************/
+    const myArray = ["apple", "banana", "mango"];
+    const myMap = new Map();
+
+    myMap.set("name", "Shreyash");
+    myMap.set("age", 21);
+
+    console.log(myArray[0]);          // apple
+    console.log(myMap.get("name"));   // Shreyash
+
+
+    /*******************************************
+     8️⃣ Using attributes in NodeList via indexing & forEach
+     *******************************************/
+    const images = document.querySelectorAll("img");
+
+    // Change alt of first image
+    images[0].setAttribute("alt", "Updated Logo Image");
+
+    // Loop and assign data-index to each image
+    images.forEach((img, index) => {
+      img.setAttribute("data-index", index);
+    });
+
+
+    /*******************************************
+     9️⃣ getElementsByClassName() & HTMLCollection
+     *******************************************/
+    const items = document.getElementsByClassName("menu-item");
+    console.log(items); // HTMLCollection (not NodeList)
+
+    // Access by index
+    items[1].textContent = "Changed using getElementsByClassName";
+
+
+    /*******************************************
+     🔟 HTMLCollection & Array.from()
+     *******************************************/
+    // HTMLCollection cannot use forEach directly, so convert it
+    const itemsArray = Array.from(items);
+
+    itemsArray.forEach(item => {
+      item.style.color = "purple";
+      item.style.fontWeight = "bold";
+    });
+
+
+    /*******************************************
+     ✅ SUMMARY (Console Output)
+     *******************************************/
+    console.log(`
+      ✅ getElementById() → Single element by ID
+      ✅ getAttribute() / setAttribute()
+      ✅ style property to edit CSS
+      ✅ innerHTML / textContent / innerText differences
+      ✅ querySelector() / querySelectorAll()
+      ✅ NodeList → supports forEach()
+      ✅ Map vs Array → Key-Value vs Indexed values
+      ✅ getElementsByClassName() → HTMLCollection
+      ✅ Array.from() → Convert HTMLCollection to Array
+    `);
+  </script>
+
 </body>
 </html>
