@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Events Explained</title>
+</head>
+<body style="background-color: #414141; color: aliceblue;">
+    <h2>Amazing image</h2>
+    <div>
+        <ul id="images">
+            <!-- List of images with unique IDs -->
+            <li><img width="200px" id="photoshop" src="https://images.pexels.com/photos/3561339/pexels-photo-3561339.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt="photoshop"></li>
+            <li><img width="200px" id="japan" src="https://images.pexels.com/photos/3532553/pexels-photo-3532553.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt=""></li>
+            <li><img width="200px" id="river" src="https://images.pexels.com/photos/3532551/pexels-photo-3532551.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt=""></li>
+            <li><img width="200px" id="owl" src="https://images.pexels.com/photos/3532552/pexels-photo-3532552.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt=""></li>
+            <li><img width="200px" id="prayer" src="https://images.pexels.com/photos/2522671/pexels-photo-2522671.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt=""></li>
+            <li><a style="color: aliceblue;" href="https://google.com" id="google">Google</a></li>
+        </ul>
+   </div>
+</body>
+
+<script>
+
+/* -----------------------------------------------------
+   🔹 1. BASIC EVENT HANDLING METHODS
+------------------------------------------------------*/
+
+// Method 1: Using the 'onclick' property directly on the element
+// document.getElementById('owl').onclick = function(){
+//     alert('owl');
+// }
+// ❗ Not recommended because:
+// - You can attach only one event per element this way
+// - It overwrites previous onclick handlers
+
+
+// Method 2: Using 'attachEvent()' (OLD Internet Explorer method)
+// Not used in modern browsers anymore
+
+
+// Method 3: Using addEventListener()
+// document.getElementById('owl').addEventListener('click', function(){
+//     alert('owl');
+// })
+// ✅ This is the modern, standard approach
+// - Allows multiple event listeners for the same event
+// - Provides more control (bubbling/capturing)
+// - Can use removeEventListener() later if needed
+
+
+/* -----------------------------------------------------
+   🔹 2. EVENT OBJECT PROPERTIES
+------------------------------------------------------*/
+
+// Each event has an associated "event object" (commonly called 'e')
+// It contains useful info like:
+
+// e.type            → The type of event ('click', 'keydown', etc.)
+// e.timeStamp       → Time (in ms) when event occurred
+// e.defaultPrevented→ Boolean (true/false) if default action was prevented
+
+// e.target          → The actual element that triggered the event
+// e.currentTarget   → The element on which the event listener is attached
+
+// e.clientX / e.clientY  → Mouse coordinates relative to the visible viewport
+// e.screenX / e.screenY  → Mouse coordinates relative to the physical screen
+
+// e.altKey / e.ctrlKey / e.shiftKey  → true if those keys were pressed
+// e.keyCode          → Key code (for keyboard events)
+
+
+/* -----------------------------------------------------
+   🔹 3. EVENT PROPAGATION: BUBBLING vs CAPTURING
+------------------------------------------------------*/
+
+// Bubbling Phase (default - false):
+// Event travels from the innermost element → up to outer elements
+// Example: img → li → ul → div → body → html → document
+// document.getElementById('images').addEventListener('click', function(e){
+//     console.log("click inside the ul");
+// }, false)
+
+// document.getElementById('owl').addEventListener('click', function(e){
+//     console.log("owl clicked ");
+//     // e.stopPropagation() → stops bubbling, prevents parent handlers from firing
+// }, false)
+
+
+// Preventing default behavior (like opening a link)
+// document.getElementById('google').addEventListener('click', function(e){
+//     e.preventDefault();  // stops link from opening Google
+//     e.stopPropagation(); // stops bubbling
+//     console.log("google clicked");
+// }, false)
+
+
+// Capturing Phase (useCapture = true):
+// Event travels from the outermost element → down to the target
+// document.getElementById('images').addEventListener('click', function(){
+//     console.log("click inside the ul");
+// }, true)
+
+// document.getElementById('owl').addEventListener('click', function(){
+//     console.log("owl clicked");
+// }, true)
+
+
+/* -----------------------------------------------------
+   🔹 4. MINI PROJECT: IMAGE REMOVE ON CLICK
+------------------------------------------------------*/
+
+// Here we are using the concept of EVENT DELEGATION
+// Instead of adding click listeners on each image separately,
+// we attach ONE listener on the parent <ul> element
+// Then detect which image triggered the event
+
+document.querySelector('#images').addEventListener('click', function(e){
+    // e.target → tells which element inside #images was clicked
+    if(e.target.tagName == 'IMG'){     // ensure it's an image click
+        console.log(e.target.id);      // log its ID (optional)
+        let removeIt = e.target.parentNode; // get the <li> containing the image
+        removeIt.remove();             // remove that <li> from the DOM
+    }
+})
+
+/*
+✅ Why Event Delegation?
+- More efficient than adding listeners to every image
+- Works for dynamically added elements too
+- Uses event bubbling to catch events from children
+
+✅ Steps:
+1. Click happens on <img>
+2. Event bubbles up to <ul id="images">
+3. Listener on <ul> receives the event
+4. Inside handler, e.target identifies which <img> was clicked
+5. Parent <li> of that image is removed from the page
+*/
+
+/* -----------------------------------------------------
+   🔹 5. EXTRA NOTES
+------------------------------------------------------*/
+// e.stopPropagation() → Stops event from moving further up the DOM tree
+// e.preventDefault()  → Prevents browser's default behavior (like following links, submitting forms)
+// remove() → Removes an element from the DOM directly
+// parentNode → Refers to the immediate parent of an element
+// tagName → Returns the element's tag name (like "IMG", "DIV", etc.)
+
+</script>
+</html>
