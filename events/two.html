@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>setTimeout & clearTimeout Example</title>
+</head>
+<body>
+    <h1>shrey's notes</h1>
+    <button id="stop"> <!-- lowercase 'stop' to match JS selector -->
+        stop
+    </button>
+</body>
+
+<script>
+    /* -----------------------------------------------------------
+       🔹 Function 1: sayShrey()
+       -----------------------------------------------------------
+       - Just a basic function that logs "Shrey" to the console.
+       - We'll use it later if needed for timing demonstrations.
+    ----------------------------------------------------------- */
+    const sayShrey = function() {
+        console.log("Shrey");
+    }
+
+    /* -----------------------------------------------------------
+       🔹 Function 2: changeText()
+       -----------------------------------------------------------
+       - Changes the text of the <h1> tag to "hello world".
+       - We'll use this function with setTimeout to delay execution.
+    ----------------------------------------------------------- */
+    const changeText = function() {
+        document.querySelector('h1').innerHTML = "hello world";
+    }
+
+    /* -----------------------------------------------------------
+       🔹 setTimeout()
+       -----------------------------------------------------------
+       - Syntax: setTimeout(function, timeInMilliseconds)
+       - Executes the given function **once** after the specified delay.
+       - Here, changeText() will run after 2000 ms (2 seconds).
+       - setTimeout() returns a unique ID (called timeout ID),
+         which we store in a variable so we can cancel it later.
+    ----------------------------------------------------------- */
+    const changeMe = setTimeout(changeText, 2000);
+
+    /* -----------------------------------------------------------
+       🔹 clearTimeout()
+       -----------------------------------------------------------
+       - Stops the function scheduled by setTimeout() from running.
+       - You must pass the same timeout ID that was returned by setTimeout().
+       - In this case, clicking the button will cancel the pending timeout.
+    ----------------------------------------------------------- */
+    document.querySelector('#stop').addEventListener('click', function() {
+        clearTimeout(changeMe);    // Cancels the scheduled function
+        console.log("STOPPED");   // Confirmation in the console
+    });
+</script>
+</html>
