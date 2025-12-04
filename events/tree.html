@@ -1,34 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"> 
+    <!-- This sets the character encoding of the webpage to UTF-8, 
+         which supports almost every language and special symbol. -->
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- This makes the webpage responsive on mobile devices.
+         It means: show the page width equal to screen width. -->
+
     <title>Document</title>
+    <!-- The text shown in the browser tab. -->
 </head>
+
 <body>
     <h1>shrey's notes 2</h1>
+    <!-- A heading on the page. Only for display. -->
+
     <button id="start">start</button>
+    <!-- A button to start the interval timer. -->
+
     <button id="stop">stop</button>
+    <!-- A button to stop the interval timer. -->
 </body>
 
 <script>
-    let intervalId; 
+    let intervalId;  
+    /* 
+       This variable will store the ID returned by setInterval().
+       We keep it outside the functions so both start & stop buttons can access it.
+       By default it is 'undefined' because no interval is running initially.
+    */
 
     const SayDate = function(str){
+        /*
+           This is a function that prints two things:
+           1. The string passed into the function (here it will be "hi")
+           2. The current timestamp (Date.now())
+
+           setInterval will call this function repeatedly after a fixed time.
+        */
+
         console.log("Shrey", Date.now());
+        /* 
+           console.log prints to the browser console.
+           Date.now() gives current time in milliseconds since Jan 1, 1970
+        */
     }
 
     document.querySelector('#start').addEventListener('click', function() {
-        if (!intervalId) { // start only if not already running
+        /*
+           document.querySelector('#start') selects the button with id="start".
+           addEventListener('click', ...) means: run this function when the user clicks the start button.
+        */
+
+        if (!intervalId) {  
+            /*
+               This checks if an interval is already running.
+               If intervalId is undefined or null → no interval is running.
+               If it's already running, we should NOT start another one, otherwise multiple intervals will run together.
+            */
+
             intervalId = setInterval(SayDate, 1000, "hi");
+            /*
+               setInterval(function, time_in_ms, optional_arguments)
+
+               - SayDate → function to run repeatedly
+               - 1000 ms → run every 1 second
+               - "hi" → passed as argument to SayDate()
+
+               setInterval RETURNS a unique ID that we store in intervalId
+               So later we can stop it using clearInterval(intervalId)
+            */
+
             console.log("STARTED");
+            // Just a message showing interval started
         }
     });
 
     document.querySelector('#stop').addEventListener('click', function() {
+        /*
+           This function runs when user presses STOP button.
+        */
+
         clearInterval(intervalId);
+        /*
+           clearInterval() stops the interval whose ID we give.
+           If no interval is running, this does nothing — safe to call.
+        */
+
         intervalId = null;
+        /*
+           We set intervalId back to null to indicate: "No interval is running now".
+           This also allows start button to work again.
+        */
+
         console.log("STOPPED");
+        // Message shown when interval stops
     });
 </script>
+
 </html>

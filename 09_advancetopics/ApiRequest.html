@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<!--
+  <!DOCTYPE html>
+  - Declares the document type and HTML version.
+  - Tells the browser to render the page in standards mode (HTML5 here).
+-->
+
+<html lang="en">
+<head>
+  <!--
+    <head> contains meta-information about the page (not visible content),
+    like character encoding, viewport rules, and title shown in browser tab.
+  -->
+
+  <meta charset="UTF-8">
+  <!--
+    charset="UTF-8"
+    - Sets the character encoding for the document.
+    - UTF-8 supports virtually all characters (English, accented letters, emojis, etc.).
+    - Important so characters display correctly.
+  -->
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--
+    viewport meta tag
+    - Helps make the page responsive on mobile devices.
+    - width=device-width sets the layout width equal to the device screen width.
+    - initial-scale=1.0 sets the initial zoom level.
+  -->
+
+  <title>Document</title>
+  <!--
+    <title>
+    - Text shown in the browser tab and used in bookmarks.
+  -->
+</head>
+
+<body style="background-color: #212121;">
+  <!--
+    The <body> contains visible content of the page.
+
+    style="background-color: #212121;"
+    - Inline CSS setting the page background color to a dark gray.
+    - It's equivalent to writing body { background-color: #212121; } in a stylesheet.
+  -->
+
+  <!--
+    The text below lists the readyState numeric values for XMLHttpRequest (for quick reference).
+    It's plain text inserted on the page (not part of the script).
+    Each number + label corresponds to a different state of the XHR lifecycle.
+  -->
+  0	UNSENT	Client has been created. open() not called yet.
+  1	OPENED	open() has been called.
+  2	HEADERS_RECEIVED	send() has been called, and headers and status are available.
+  3	LOADING	Downloading; responseText holds partial data.
+  4	DONE	The operation is complete.
+</body>
+
+<script>
+/*
+  This script demonstrates a basic XMLHttpRequest (XHR) GET request to the GitHub API.
+  The request is asynchronous by default (unless you explicitly set it to synchronous),
+  which means JavaScript continues running while the network request happens in the background.
+*/
+
+/* ---------------------------------------------------------------------------
+   Constant holding the URL we want to request
+   --------------------------------------------------------------------------- */
+const requestUrl = 'https://api.github.com/users/hiteshchoudhary';
+/*
+  const
+  - Declares a constant: a variable whose binding cannot be reassigned.
+  - The data referenced by the variable may still be mutable (for objects),
+    but here it's a simple string, so requestUrl will always point to this string.
+
+  'https://api.github.com/users/hiteshchoudhary'
+  - This is the target endpoint (resource) on the GitHub REST API that returns
+    public information about the user with username "hiteshchoudhary".
+  - When making requests to third-party APIs, CORS (Cross-Origin Resource Sharing)
+    rules may apply. GitHub's API allows cross-origin requests from browsers.
+*/
+
+/* ---------------------------------------------------------------------------
+   Create a new XMLHttpRequest object
+   --------------------------------------------------------------------------- */
+const xhr = new XMLHttpRequest();
+/*
+  new XMLHttpRequest()
+  - Constructs a new XHR object which is used to perform network requests (AJAX).
+  - XMLHttpRequest is a built-in browser API (older than fetch()) but still widely used.
+  - xhr is now an object exposing methods and properties like open, send, readyState, status, responseText, etc.
+
+  const xhr
+  - We use const because we don't plan to reassign the xhr variable.
+  - The object's internal state will still change (readyState, response, etc.).
+*/
+
+/* ---------------------------------------------------------------------------
+   Initialize the request
+   --------------------------------------------------------------------------- */
+xhr.open('GET', requestUrl);
+/*
+  xhr.open(method, url, async = true, user = null, password = null)
+
+  - 'GET'
+    * The HTTP method. GET requests retrieve data and should be idempotent (not change server state).
+    * Other methods: POST, PUT, DELETE, PATCH, etc.
+
+  - requestUrl
+    * The resource we want to request.
+
+  - Note: open() has an optional third parameter 'async' (default true).
+    If omitted, the request is asynchronous (non-blocking). That's almost always what you want
+    in browser code to avoid freezing the UI.
+
+  - open() prepares the request but does NOT send it yet.
+    It also sets xhr.readyState to 1 (OPENED).
+*/
+
+/* ---------------------------------------------------------------------------
+   Register an event handler for state changes
+   --------------------------------------------------------------------------- */
+xhr.onreadystatechange = function() {
+  // This function runs whenever xhr.readyState changes.
+  // readyState values:
+  // 0: UNSENT, 1: OPENED, 2: HEADERS_RECEIVED, 3: LOADING, 4: DONE
+
+  console.log(xhr.readyState);
+  /*
+    console.log(...)
+    - Prints output to the browser console (useful for debugging).
+    - Here we log the numeric readyState so you can see the lifecycle in the console.
+    - Note: console.log is non-blocking and just helps developers inspect values.
+  */
+
+  if (xhr.readyState === 4) {
+    /*
+      xhr.readyState === 4
+      - Checks whether the request is DONE (value 4).
+      - Using strict equality (===) ensures type and value match (no type coercion).
+      - We check 4 because the response is complete and responseText contains the full response.
+
+      Important: Even when readyState === 4, the request might have failed
+      (e.g., 404 or 500 HTTP status). To ensure success, check xhr.status as well.
+    */
+
+    // Optional: check HTTP status for successful response (200–299)
+    // Example:
+    // if (xhr.status >= 200 && xhr.status < 300) { /* success */ } else { /* error */ }
+
+    try {
+      // this.responseText contains the raw text body returned from the server.
+      // JSON.parse converts a JSON string into a JavaScript value (object/array/etc).
+      const data = JSON.parse(this.responseText);
+
+      /*
+        JSON.parse(...)
+        - Takes a JSON-formatted string and returns the corresponding JS value.
+        - If the responseText is not valid JSON, JSON.parse will throw a SyntaxError.
+        - Using try/catch helps handle parse errors gracefully.
+      */
+
+      console.log(typeof data);
+      /*
+        typeof data
+        - Returns a string describing the type of 'data'.
+        - For a parsed JSON object, typeof will return "object".
+        - This log helps confirm that parsing produced an object/array as expected.
+      */
+
+      console.log(data.followers);
+      /*
+        data.followers
+        - Accesses the 'followers' property from the parsed user object returned by GitHub.
+        - For GitHub user endpoints, followers is usually a number showing how many followers the user has.
+        - If the property doesn't exist, this will log 'undefined'.
+      */
+
+    } catch (err) {
+      // If JSON.parse throws (invalid JSON), we catch it here and log the error.
+      console.error('Failed to parse JSON response:', err);
+      /*
+        console.error(...)
+        - Similar to console.log but prints as an error in the console (often styled in red).
+      */
+    }
+  }
+};
+
+/* ---------------------------------------------------------------------------
+   Send the request
+   --------------------------------------------------------------------------- */
+xhr.send();
+/*
+  xhr.send(body = null)
+  - Sends the HTTP request to the server.
+  - For GET requests, the body should be null/omitted.
+  - For POST requests, pass data (string or FormData) as the body.
+  - After send() is called, the browser performs the network request asynchronously:
+    * readyState moves to 2 (HEADERS_RECEIVED) once response headers are available,
+    * then to 3 (LOADING) as data streams in,
+    * and finally to 4 (DONE) when fully received.
+
+  - If the request is cross-origin, the server must send appropriate CORS headers
+    (e.g., Access-Control-Allow-Origin) to permit the browser to read the response.
+*/
+
+/* ---------------------------------------------------------------------------
+   Additional useful XHR properties & events (not used above but good to know)
+   ---------------------------------------------------------------------------
+
+   - xhr.status
+     * The HTTP status code returned by the server (e.g., 200 = OK, 404 = Not Found, 500 = Server Error).
+
+   - xhr.statusText
+     * A short textual description of the status (e.g., "OK", "Not Found").
+
+   - xhr.responseType
+     * Lets you request a specific response type, e.g., 'json', 'blob', 'arraybuffer'.
+     * If you set xhr.responseType = 'json', then xhr.response will be a parsed object
+       (but be careful: older browsers had quirks with xhr.responseType = 'json').
+
+   - xhr.response / xhr.responseText
+     * xhr.responseText contains the raw response as a string.
+     * xhr.response contains the parsed response when responseType is used.
+
+   - xhr.onload
+     * A nicer event handler that runs when the request completes successfully (equivalent to readyState === 4 but only when status is in the success range).
+     * Example:
+       xhr.onload = function() {
+         if (xhr.status >= 200 && xhr.status < 300) { // success }
+       };
+
+   - xhr.onerror
+     * Triggered when the request fails due to network-level issues (DNS error, offline, CORS blocked, etc).
+
+   - xhr.timeout and xhr.ontimeout
+     * xhr.timeout = numberOfMilliseconds sets a maximum wait time.
+     * xhr.ontimeout handles timeouts.
+
+   - xhr.setRequestHeader(headerName, headerValue)
+     * Used to set custom headers (e.g., "Content-Type" for POST requests) after open() and before send().
+
+   Using fetch() instead:
+   - Modern code often uses the fetch() API which returns a Promise and has a simpler syntax:
+     fetch(requestUrl).then(r => r.json()).then(data => console.log(data));
+
+*/
+
+/* ---------------------------------------------------------------------------
+   Summary of the flow
+   ---------------------------------------------------------------------------
+   1. Create XHR object: const xhr = new XMLHttpRequest();
+   2. Initialize request: xhr.open('GET', requestUrl); (sets method & URL)
+   3. Register callback(s): xhr.onreadystatechange = fn; (react to state changes)
+   4. Send request: xhr.send();
+   5. When readyState === 4, the full response is available in xhr.responseText.
+      Parse with JSON.parse(...) and check xhr.status before trusting the data.
+*/
+</script>
+</html>
