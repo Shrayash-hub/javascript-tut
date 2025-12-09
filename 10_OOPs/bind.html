@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Class Bind Example</title>
+</head>
+<body>
+    <button>Button clicked</button>
+</body>
+<script>
+    class React {
+        constructor(){
+            this.library = "React"
+            this.server = "https://localhost:300"
+
+            // ============================================================
+            // CONCEPT: THE "THIS" PROBLEM & .bind()
+            // ============================================================
+            
+            // 1. SELECTING THE ELEMENT
+            // We find the button in the DOM.
+            const btn = document.querySelector('button');
+
+            // 2. THE PROBLEM
+            // If we wrote: btn.addEventListener('click', this.handleClick)
+            // JavaScript would pass the reference of the function to the HTML button.
+            // When clicked, 'this' inside handleClick would refer to the <button> element,
+            // NOT the React class instance. You would lose access to 'this.server'.
+
+            // 3. THE SOLUTION: .bind(this)
+            // .bind(this) creates a NEW copy of the handleClick function.
+            // It forcefully links the current class context (the React object) to that function.
+            // No matter who calls it (even the button), 'this' will always remain the React object.
+
+            btn.addEventListener('click', this.handleClick.bind(this));
+        }
+
+        handleClick(){
+            // Because we used .bind(this) above:
+            console.log("Button clicked");
+            
+            // 'this' is now safe. It prints the React object {library: "React", ...}
+            // If we hadn't bound it, this would print the <button> HTML element.
+            console.log(this); 
+            console.log(this.server); // Access data from the class
+        }
+    }
+
+    // Initialize the class to run the constructor code
+    const app = new React()
+
+</script>
+</html>
+
+<!-- Context Loss: In JavaScript, when you pass a method (like handleClick) into an event listener, the connection to its original object (the Class) is severed.
+
+Context Reassignment: The browser sets this to be the element that triggered the event (the <button>).
+
+bind(this): This acts like an anchor. It forces the function to remember: "My this is the Class Instance, not the HTML Button." -->

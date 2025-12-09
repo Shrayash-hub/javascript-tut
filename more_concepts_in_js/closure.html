@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Closure aur chai</title>
+</head>
+<body style="background-color: #313131;">
+    <button id="orange">Orange</button>
+    <button id="green">Green</button>
+</body>
+
+    <script>
+    /* ==========================================================================
+       CONCEPT 1: LEXICAL SCOPING
+       Definition: "Lexical" means hierarchy or where code is written.
+       Inner functions have access to variables declared in their outer (parent) scopes.
+       ========================================================================== */
+
+    // function init() {
+    //      let name = "Mozilla"; 
+    //      // 'displayName' is defined INSIDE 'init'.
+    //      // Therefore, it has access to 'init's variables (lexical scope).
+    //      function displayName() {
+    //          console.log(name); 
+    //      }
+    //      displayName();
+    // }
+    // init();
+
+
+    /* ==========================================================================
+       CONCEPT 2: SCOPE CHAINS & RESTRICTIONS
+       1. Inner functions can look UP (to parents).
+       2. Parents cannot look DOWN (to children).
+       3. Siblings cannot look at SIDEWAYS (at each other).
+       ========================================================================== */
+
+    // function outer(){
+    //      let username = "hitesh"
+    //      // console.log("OUTER", secret); // ERROR: Parent cannot access child's variable.
+         
+    //      function inner(){
+    //          let secret = "my123"
+    //          console.log("inner", username); // SUCCESS: Child accesses Parent.
+    //      }
+         
+    //      function innerTwo(){
+    //          console.log("innerTwo", username); // SUCCESS: Child accesses Parent.
+    //          // console.log(secret); // ERROR: Sibling cannot access Sibling's variable.
+    //      }
+         
+    //      inner()
+    //      innerTwo()
+    // }
+    // outer()
+    // // console.log("TOO OUTER", username); // ERROR: Global scope cannot access function scope.
+
+
+    /* ==========================================================================
+       CONCEPT 3: CLOSURE (The Core Concept)
+       Definition: A closure is a function bundled together with its lexical environment.
+       
+       In simpler terms: When a function returns another function, the returned function 
+       remembers the variables that were present when it was created.
+       ========================================================================== */
+
+    // function makeFunc() {
+    //      const name = "Mozilla";
+         
+    //      function displayName() {
+    //          console.log(name);
+    //      }
+         
+    //      // CRITICAL STEP: We are NOT calling displayName(). We are RETURNING it.
+    //      // Normally, when makeFunc() finishes, the variable 'name' should be deleted from memory.
+    //      return displayName;
+    // }
+
+    // const myFunc = makeFunc(); 
+    // // At this point, makeFunc has finished execution. Its scope is technically gone.
+    
+    // myFunc(); 
+    // // OUTPUT: "Mozilla"
+    // // WHY? Because 'displayName' formed a CLOSURE. It took a "snapshot" or "backpack"
+    // // containing the variable 'name' and carried it out into the global scope.
+
+    </script>
+
+
+    <script>
+        /* ==========================================================================
+           CONCEPT 4: PRACTICAL USE CASE (Event Handlers)
+           Problem: onclick expects a function reference, but we want to pass arguments.
+           ========================================================================== */
+
+        // SCENARIO A: The Wrong Way
+        // document.getElementById("orange").onclick = function(){
+        //      document.body.style.backgroundColor = `orange`
+        // }
+        // This works, but it repeats code. We want a reusable function.
+
+
+        // SCENARIO B: The "Call Immediately" Mistake
+        // function clickHandler(color){ ... }
+        // document.getElementById("orange").onclick = clickHandler("orange")
+        // If clickHandler didn't return a function, it would run immediately on page load, 
+        // and the return value (undefined) would be assigned to onclick.
+
+
+        // SCENARIO C: The Closure Solution (Currying)
+        function clickHandler(color){
+            // 'color' is a local variable in clickHandler's scope.
+            
+            // We return an anonymous function.
+            // This anonymous function creates a CLOSURE enclosing the 'color' variable.
+            return function(){
+                document.body.style.backgroundColor = `${color}`
+            }
+        }
+
+        // EXECUTION FLOW:
+        // 1. clickHandler("orange") runs immediately.
+        // 2. It creates a local variable color="orange".
+        // 3. It returns the inner function.
+        // 4. The inner function (holding "orange" in its closure) is assigned to onclick.
+        document.getElementById('orange').onclick = clickHandler("orange")
+        
+        // 1. clickHandler("green") runs immediately.
+        // 2. It creates a NEW execution context with color="green".
+        // 3. It returns a NEW inner function (holding "green" in its closure).
+        document.getElementById('green').onclick = clickHandler("green")
+
+    </script>
+</html>
